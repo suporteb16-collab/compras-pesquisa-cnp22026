@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Relatório de Compradores — Mundial Cromo CNP2 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root{
+  --bg:#F4F4F2; --gold:#D4A800; --ink:#111; --card:#FFFFFF;
+  --gold-soft:#F6EBB8; --gold-line:#E8D77A;
+  --gray:#B4B2A9; --gray-soft:#E4E3DE; --gray-dark:#6B6A63;
+  --green:#3FA34D; --red:#D0453B;
+  --line:#E4E3DE; --shadow:0 1px 2px rgba(17,17,17,.04),0 8px 24px rgba(17,17,17,.05);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:'DM Sans',system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased;line-height:1.5;padding-bottom:64px}
+.num{font-family:'Bebas Neue',sans-serif;font-weight:400;letter-spacing:.5px;line-height:.9}
+
+/* ---------- HEADER ---------- */
+header{background:var(--ink);color:#fff;padding:28px 0 0}
+.wrap{max-width:1160px;margin:0 auto;padding:0 24px}
+.htop{display:flex;justify-content:space-between;align-items:flex-start;gap:24px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:14px}
+.brand .dot{width:38px;height:38px;border-radius:9px;background:var(--gold);
+  display:grid;place-items:center;flex-shrink:0}
+.brand .dot span{font-family:'Bebas Neue';font-size:26px;color:var(--ink);line-height:1}
+.brand h1{font-family:'Bebas Neue';font-size:30px;letter-spacing:1px;line-height:1}
+.brand p{font-size:12.5px;color:#B9B8B2;margin-top:2px}
+.hmeta{text-align:right;font-size:12.5px;color:#B9B8B2}
+.hmeta b{color:var(--gold);font-weight:600}
+.tabs{display:flex;gap:4px;margin-top:26px}
+.tab{background:none;border:none;color:#8F8E88;font-family:'DM Sans';font-size:14px;
+  font-weight:600;padding:13px 20px 15px;cursor:pointer;border-bottom:3px solid transparent;
+  transition:color .15s}
+.tab:hover{color:#D6D5CF}
+.tab.on{color:#fff;border-bottom-color:var(--gold)}
+
+/* ---------- LAYOUT ---------- */
+main{padding-top:34px}
+.view{display:none;animation:fade .35s ease}
+.view.on{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.eyebrow{font-size:11.5px;font-weight:700;letter-spacing:1.6px;text-transform:uppercase;
+  color:var(--gold);margin-bottom:14px}
+.eyebrow.gray{color:var(--gray-dark)}
+.section-title{font-family:'Bebas Neue';font-size:23px;letter-spacing:.6px;margin-bottom:2px}
+.section-sub{font-size:13.5px;color:var(--gray-dark);margin-bottom:20px;max-width:70ch}
+.block{margin-bottom:44px}
+
+/* ---------- KPI ---------- */
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 20px 18px;
+  box-shadow:var(--shadow);position:relative;overflow:hidden}
+.kpi.hi{background:var(--ink);border-color:var(--ink)}
+.kpi.hi .kpi-label,.kpi.hi .kpi-foot{color:#B9B8B2}
+.kpi.hi .kpi-val{color:#fff}
+.kpi.hi .kpi-val em{color:var(--gold)}
+.kpi::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--gold)}
+.kpi.hi::before{background:var(--gold)}
+.kpi-label{font-size:12px;font-weight:600;color:var(--gray-dark);text-transform:uppercase;
+  letter-spacing:.6px;margin-bottom:10px}
+.kpi-val{font-family:'Bebas Neue';font-size:44px;line-height:.85;color:var(--ink)}
+.kpi-val em{font-style:normal;font-size:22px;color:var(--gray-dark);margin-left:2px}
+.kpi-val .pre{font-size:22px;color:var(--gray-dark);margin-right:3px}
+.kpi-foot{font-size:12px;color:var(--gray-dark);margin-top:9px}
+.kpi-foot b{color:var(--ink);font-weight:600}
+
+/* ---------- CARD / GRID ---------- */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px;
+  box-shadow:var(--shadow)}
+.panel h3{font-family:'Bebas Neue';font-size:19px;letter-spacing:.5px;margin-bottom:3px}
+.panel .cap{font-size:12px;color:var(--gray-dark);margin-bottom:18px}
+.chart-h{position:relative;height:240px}
+.chart-h.tall{height:300px}
+
+/* ---------- BAR LIST ---------- */
+.bars{display:flex;flex-direction:column;gap:13px;margin-top:4px}
+.bar-row .bl{display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px}
+.bar-row .bl .k{font-weight:500;color:var(--ink)}
+.bar-row .bl .v{font-family:'Bebas Neue';font-size:17px;color:var(--gray-dark)}
+.bar-row .bl .v b{color:var(--ink)}
+.track{height:9px;background:var(--gray-soft);border-radius:6px;overflow:hidden}
+.fill{height:100%;background:var(--gold);border-radius:6px;transition:width .8s cubic-bezier(.2,.7,.2,1)}
+.fill.ink{background:var(--ink)}
+
+/* ---------- COMPARISON ROWS ---------- */
+.cmp-legend{display:flex;gap:22px;font-size:12.5px;color:var(--gray-dark);margin-bottom:22px;
+  align-items:center;flex-wrap:wrap}
+.cmp-legend .sw{display:inline-flex;align-items:center;gap:8px;font-weight:600;color:var(--ink)}
+.cmp-legend .sw i{width:13px;height:13px;border-radius:4px;display:inline-block}
+.cmp-row{margin-bottom:18px}
+.cmp-row .k{font-size:13.5px;font-weight:600;margin-bottom:8px;display:flex;justify-content:space-between}
+.cmp-row .k .delta{font-family:'Bebas Neue';font-size:16px;font-weight:400;letter-spacing:.5px}
+.cmp-bars{display:grid;grid-template-columns:1fr;gap:6px}
+.cmp-line{display:grid;grid-template-columns:92px 1fr 46px;align-items:center;gap:10px}
+.cmp-line .lbl{font-size:10.5px;color:var(--gray-dark);font-weight:600;text-transform:uppercase;letter-spacing:.3px;line-height:1.15}
+.cmp-line .tk{height:14px;background:var(--gray-soft);border-radius:5px;overflow:hidden}
+.cmp-line .fl{height:100%;border-radius:5px;transition:width .8s cubic-bezier(.2,.7,.2,1)}
+.cmp-line .fl.buy{background:var(--gold)}
+.cmp-line .fl.lead{background:var(--gray)}
+.cmp-line .pc{font-family:'Bebas Neue';font-size:16px;text-align:right;color:var(--ink)}
+
+/* ---------- CONVERSION INDEX ---------- */
+.idx-note{font-size:12.5px;color:var(--gray-dark);background:var(--gold-soft);
+  border:1px solid var(--gold-line);border-radius:10px;padding:11px 15px;margin-bottom:20px;line-height:1.45}
+.idx-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.idx-item{margin-bottom:14px}
+.idx-item .top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px}
+.idx-item .top .k{font-size:13.5px;font-weight:600}
+.idx-item .top .val{font-family:'Bebas Neue';font-size:20px;letter-spacing:.5px}
+.idx-scale{position:relative;height:10px;background:var(--gray-soft);border-radius:6px;overflow:hidden}
+.idx-scale .mid{position:absolute;left:calc(1/2.6*100%);top:-3px;bottom:-3px;width:2px;background:var(--gray-dark);opacity:.4}
+.idx-scale .fl{height:100%;border-radius:6px}
+.idx-scale .fl.up{background:var(--green)}
+.idx-scale .fl.down{background:var(--red)}
+.idx-scale .fl.mid{background:var(--gold)}
+.idx-sub{font-size:11px;color:var(--gray-dark);margin-top:4px}
+
+/* ---------- INSIGHTS ---------- */
+.ins{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+.ins-card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px;
+  box-shadow:var(--shadow);border-left:4px solid var(--gold)}
+.ins-card.win{border-left-color:var(--green)}
+.ins-card.watch{border-left-color:var(--red)}
+.ins-card .tag{font-size:10.5px;font-weight:700;letter-spacing:1px;text-transform:uppercase;
+  color:var(--gold);margin-bottom:8px}
+.ins-card.win .tag{color:var(--green)}
+.ins-card.watch .tag{color:var(--red)}
+.ins-card h4{font-family:'Bebas Neue';font-size:19px;letter-spacing:.4px;margin-bottom:6px}
+.ins-card p{font-size:13.5px;color:var(--gray-dark);line-height:1.5}
+.ins-card p b{color:var(--ink);font-weight:600}
+
+/* ---------- FOOT ---------- */
+footer{max-width:1160px;margin:40px auto 0;padding:22px 24px 0;border-top:1px solid var(--line);
+  font-size:12px;color:var(--gray-dark);display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+footer b{color:var(--ink)}
+.pill{display:inline-block;background:var(--ink);color:#fff;font-size:10.5px;font-weight:700;
+  letter-spacing:.8px;text-transform:uppercase;padding:4px 9px;border-radius:20px}
+
+@media(max-width:900px){
+  .kpis{grid-template-columns:1fr 1fr}
+  .grid2,.grid3,.idx-grid,.ins{grid-template-columns:1fr}
+  .hmeta{text-align:left}
+}
+@media(max-width:520px){
+  .kpis{grid-template-columns:1fr 1fr;gap:10px}
+  .kpi-val{font-size:36px}
+  .tab{padding:12px 13px;font-size:13px}
+  .cmp-line{grid-template-columns:76px 1fr 42px}
+}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div class="htop">
+      <div class="brand">
+        <div class="dot"><span>MC</span></div>
+        <div>
+          <h1>Relatório de Compradores</h1>
+          <p>Mundial Cromo · Lançamento CNP2 2026</p>
+        </div>
+      </div>
+      <div class="hmeta">
+        <div><span class="pill">Retrospectiva</span></div>
+        <div style="margin-top:8px">Janela de compras: <b>10–18/08/2026</b></div>
+        <div>Base: <b id="m-buy"></b> compradores · <b id="m-lead"></b> leads</div>
+      </div>
+    </div>
+    <nav class="tabs">
+      <button class="tab on" data-v="v1">Pesquisa de Compradores</button>
+      <button class="tab" data-v="v2">Compradores × Captação</button>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- ============ VIEW 1 ============ -->
+  <section class="view on" id="v1">
+    <div class="block">
+      <div class="eyebrow">Resultado do lançamento</div>
+      <div class="kpis" id="kpis"></div>
+      <div class="kpi-foot" style="margin-top:12px;font-size:11.5px">
+        Regra aplicada: só é comprador quem tem <b>data de compra</b> registrada. Respostas duplicadas
+        do mesmo e-mail (mesma data e valor) foram consolidadas em <b>1 comprador</b>.
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="eyebrow">Curva de vendas</div>
+      <h2 class="section-title">Quando as compras aconteceram</h2>
+      <p class="section-sub">Concentração forte na abertura: os dois primeiros dias respondem pela maior parte do faturamento do lançamento.</p>
+      <div class="grid2">
+        <div class="panel">
+          <h3>Compras por dia</h3>
+          <div class="cap">Nº de compradores únicos por data</div>
+          <div class="chart-h"><canvas id="c-dia"></canvas></div>
+        </div>
+        <div class="panel">
+          <h3>Faturamento por dia</h3>
+          <div class="cap">Receita acumulada ao longo da janela</div>
+          <div class="chart-h"><canvas id="c-fat"></canvas></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="eyebrow">Quem comprou</div>
+      <h2 class="section-title">Perfil do comprador</h2>
+      <p class="section-sub">Distribuição das respostas de quem efetivamente comprou no lançamento.</p>
+      <div class="grid3">
+        <div class="panel"><h3>Faixa etária</h3><div class="cap">Idade dos compradores</div><div class="bars" id="b-idade"></div></div>
+        <div class="panel"><h3>Renda mensal</h3><div class="cap">Renda declarada</div><div class="bars" id="b-renda"></div></div>
+        <div class="panel"><h3>Canal de origem</h3><div class="cap">Onde conheceu a Mundial Cromo</div><div class="bars" id="b-canal"></div></div>
+        <div class="panel"><h3>Tempo de acompanhamento</h3><div class="cap">Há quanto tempo segue o perfil</div><div class="bars" id="b-tempo"></div></div>
+        <div class="panel"><h3>Conhecimento em cromagem</h3><div class="cap">Nível declarado</div><div class="bars" id="b-conh"></div></div>
+        <div class="panel"><h3>Ocupação atual</h3><div class="cap">Com o que trabalha hoje</div><div class="bars" id="b-ocup"></div></div>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="eyebrow">Aquisição</div>
+      <h2 class="section-title">Origem da compra & motivação</h2>
+      <p class="section-sub">Rastreamento de origem (UTM) dos compradores e o principal gatilho de interesse declarado.</p>
+      <div class="grid2">
+        <div class="panel">
+          <h3>Origem do tráfego (UTM source)</h3>
+          <div class="cap">Canal que trouxe o comprador até a compra</div>
+          <div class="chart-h"><canvas id="c-utm"></canvas></div>
+        </div>
+        <div class="panel">
+          <h3>O que despertou o interesse</h3>
+          <div class="cap">Principal motivador declarado</div>
+          <div class="bars" id="b-inter"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ VIEW 2 ============ -->
+  <section class="view" id="v2">
+    <div class="block">
+      <div class="eyebrow gray">Leitura do comparativo</div>
+      <h2 class="section-title">Compradores × Base de captação</h2>
+      <p class="section-sub">Comparamos o perfil de quem <b>comprou</b> (dourado) com o perfil de <b>toda a base de leads captada</b> (cinza). Onde as barras divergem, existe um sinal: o perfil que compra é diferente do perfil que apenas se cadastra.</p>
+      <div class="cmp-legend">
+        <span class="sw"><i style="background:var(--gold)"></i>Compradores</span>
+        <span class="sw"><i style="background:var(--gray)"></i>Captação (leads)</span>
+        <span>Δ = diferença em pontos percentuais (compradores − leads)</span>
+      </div>
+      <div class="grid2" id="cmp-wrap"></div>
+    </div>
+
+    <div class="block">
+      <div class="eyebrow gray">O sinal mais valioso</div>
+      <h2 class="section-title">Índice de conversão por segmento</h2>
+      <p class="section-sub">Mostra quais perfis convertem <b>acima ou abaixo da média</b>. Calculado como participação entre compradores ÷ participação entre leads.</p>
+      <div class="idx-note">
+        <b>Como ler:</b> índice <b>1,0</b> = o segmento compra na mesma proporção em que aparece na base.
+        <b>Acima de 1,0</b> (verde) = converte <b>mais</b> que a média. <b>Abaixo de 1,0</b> (vermelho) = converte <b>menos</b>. A linha vertical marca o 1,0.
+      </div>
+      <div class="idx-grid" id="idx-wrap"></div>
+    </div>
+
+    <div class="block">
+      <div class="eyebrow gray">Conclusões</div>
+      <h2 class="section-title">Insights acionáveis</h2>
+      <p class="section-sub">Leitura automática do comparativo — o que fazer com esses dados no próximo lançamento.</p>
+      <div class="ins" id="ins-wrap"></div>
+    </div>
+  </section>
+
+  <footer>
+    <div>Relatório gerado a partir das pesquisas de <b>Compradores</b> e <b>Captação</b> · CNP2 2026 · Mundial Cromo</div>
+    <div>Design system <b>B16</b> · artefato autônomo (não conectado à planilha do dashboard ao vivo)</div>
+  </footer>
+</main>
+
+<script>
+const DATA = {"compradores": {"idade": {"25-34": {"n": 110, "pct": 33.5}, "35-44": {"n": 79, "pct": 24.1}, "18-24": {"n": 53, "pct": 16.2}, "45-54": {"n": 51, "pct": 15.5}, "55+": {"n": 32, "pct": 9.8}, "menos-18": {"n": 3, "pct": 0.9}}, "genero": {"homem": {"n": 327, "pct": 99.7}, "mulher": {"n": 1, "pct": 0.3}}, "tempo": {"menos-3m": {"n": 172, "pct": 52.4}, "3-6m": {"n": 71, "pct": 21.6}, "6m-1a": {"n": 56, "pct": 17.1}, "1-2a": {"n": 27, "pct": 8.2}, "mais-2a": {"n": 2, "pct": 0.6}}, "canal": {"instagram": {"n": 165, "pct": 50.3}, "youtube": {"n": 61, "pct": 18.6}, "facebook": {"n": 52, "pct": 15.9}, "tiktok": {"n": 41, "pct": 12.5}, "indicacao": {"n": 6, "pct": 1.8}, "kwai": {"n": 2, "pct": 0.6}, "google": {"n": 1, "pct": 0.3}}, "conhecimento": {"nenhum": {"n": 214, "pct": 65.2}, "pouco": {"n": 113, "pct": 34.5}, "avancado": {"n": 1, "pct": 0.3}}, "renda": {"1k-3k": {"n": 159, "pct": 48.6}, "3k-5k": {"n": 90, "pct": 27.5}, "5k-10k": {"n": 35, "pct": 10.7}, "ate-1k": {"n": 33, "pct": 10.1}, "acima-10k": {"n": 10, "pct": 3.1}}, "interesse": {"baixa-concorrencia": {"n": 262, "pct": 79.9}, "demanda": {"n": 43, "pct": 13.1}, "lucratividade": {"n": 23, "pct": 7.0}}, "ocupacao": {"clt": {"n": 108, "pct": 32.9}, "outro": {"n": 93, "pct": 28.4}, "autonomo": {"n": 60, "pct": 18.3}, "mecanico": {"n": 21, "pct": 6.4}, "empreendedor": {"n": 18, "pct": 5.5}, "desempregado": {"n": 18, "pct": 5.5}, "loja-pecas": {"n": 7, "pct": 2.1}, "estudante": {"n": 3, "pct": 0.9}}}, "captacao": {"idade": {"25-34": {"n": 4860, "pct": 27.0}, "18-24": {"n": 4200, "pct": 23.3}, "35-44": {"n": 3587, "pct": 19.9}, "45-54": {"n": 2758, "pct": 15.3}, "55+": {"n": 2031, "pct": 11.3}, "menos-18": {"n": 596, "pct": 3.3}}, "genero": {"homem": {"n": 17830, "pct": 98.9}, "mulher": {"n": 165, "pct": 0.9}, "nao-dizer": {"n": 37, "pct": 0.2}}, "tempo": {"menos-3m": {"n": 11851, "pct": 65.7}, "3-6m": {"n": 3090, "pct": 17.1}, "6m-1a": {"n": 1808, "pct": 10.0}, "1-2a": {"n": 791, "pct": 4.4}, "mais-2a": {"n": 492, "pct": 2.7}}, "canal": {"instagram": {"n": 10992, "pct": 61.0}, "facebook": {"n": 4350, "pct": 24.1}, "youtube": {"n": 1534, "pct": 8.5}, "tiktok": {"n": 887, "pct": 4.9}, "outro": {"n": 89, "pct": 0.5}, "indicacao": {"n": 82, "pct": 0.5}, "kwai": {"n": 62, "pct": 0.3}, "google": {"n": 36, "pct": 0.2}}, "conhecimento": {"nenhum": {"n": 9809, "pct": 54.4}, "pouco": {"n": 8084, "pct": 44.8}, "avancado": {"n": 139, "pct": 0.8}}, "renda": {"1k-3k": {"n": 8370, "pct": 46.4}, "ate-1k": {"n": 4848, "pct": 26.9}, "3k-5k": {"n": 3381, "pct": 18.8}, "5k-10k": {"n": 1149, "pct": 6.4}, "acima-10k": {"n": 284, "pct": 1.6}}, "interesse": {"baixa-concorrencia": {"n": 5200, "pct": 28.8}, "negocio-proprio": {"n": 4341, "pct": 24.1}, "renda-extra": {"n": 2120, "pct": 11.8}, "nao-clara": {"n": 1749, "pct": 9.7}, "5k+": {"n": 1033, "pct": 5.7}, "curiosidade": {"n": 909, "pct": 5.0}, "1k-3k-medio": {"n": 716, "pct": 4.0}, "500-1k-rapido": {"n": 669, "pct": 3.7}, "lucratividade": {"n": 515, "pct": 2.9}, "3k-5k-longo": {"n": 477, "pct": 2.6}, "demanda": {"n": 303, "pct": 1.7}}, "ocupacao": {"clt": {"n": 5538, "pct": 30.7}, "autonomo": {"n": 3879, "pct": 21.5}, "outro": {"n": 3404, "pct": 18.9}, "desempregado": {"n": 2978, "pct": 16.5}, "mecanico": {"n": 1016, "pct": 5.6}, "empreendedor": {"n": 815, "pct": 4.5}, "estudante": {"n": 274, "pct": 1.5}, "loja-pecas": {"n": 128, "pct": 0.7}}}, "indice_conversao": {"idade": {"25-34": {"buyers_pct": 33.5, "leads_pct": 27.0, "indice": 1.24}, "35-44": {"buyers_pct": 24.1, "leads_pct": 19.9, "indice": 1.21}, "18-24": {"buyers_pct": 16.2, "leads_pct": 23.3, "indice": 0.7}, "45-54": {"buyers_pct": 15.5, "leads_pct": 15.3, "indice": 1.01}, "55+": {"buyers_pct": 9.8, "leads_pct": 11.3, "indice": 0.87}, "menos-18": {"buyers_pct": 0.9, "leads_pct": 3.3, "indice": 0.27}}, "tempo": {"menos-3m": {"buyers_pct": 52.4, "leads_pct": 65.7, "indice": 0.8}, "3-6m": {"buyers_pct": 21.6, "leads_pct": 17.1, "indice": 1.26}, "6m-1a": {"buyers_pct": 17.1, "leads_pct": 10.0, "indice": 1.71}, "1-2a": {"buyers_pct": 8.2, "leads_pct": 4.4, "indice": 1.86}, "mais-2a": {"buyers_pct": 0.6, "leads_pct": 2.7, "indice": 0.22}}, "canal": {"instagram": {"buyers_pct": 50.3, "leads_pct": 61.0, "indice": 0.82}, "youtube": {"buyers_pct": 18.6, "leads_pct": 8.5, "indice": 2.19}, "facebook": {"buyers_pct": 15.9, "leads_pct": 24.1, "indice": 0.66}, "tiktok": {"buyers_pct": 12.5, "leads_pct": 4.9, "indice": 2.55}, "indicacao": {"buyers_pct": 1.8, "leads_pct": 0.5, "indice": 3.6}, "kwai": {"buyers_pct": 0.6, "leads_pct": 0.3, "indice": 2.0}, "google": {"buyers_pct": 0.3, "leads_pct": 0.2, "indice": 1.5}}, "conhecimento": {"nenhum": {"buyers_pct": 65.2, "leads_pct": 54.4, "indice": 1.2}, "pouco": {"buyers_pct": 34.5, "leads_pct": 44.8, "indice": 0.77}, "avancado": {"buyers_pct": 0.3, "leads_pct": 0.8, "indice": 0.37}}, "renda": {"1k-3k": {"buyers_pct": 48.6, "leads_pct": 46.4, "indice": 1.05}, "3k-5k": {"buyers_pct": 27.5, "leads_pct": 18.8, "indice": 1.46}, "5k-10k": {"buyers_pct": 10.7, "leads_pct": 6.4, "indice": 1.67}, "ate-1k": {"buyers_pct": 10.1, "leads_pct": 26.9, "indice": 0.38}, "acima-10k": {"buyers_pct": 3.1, "leads_pct": 1.6, "indice": 1.94}}, "ocupacao": {"clt": {"buyers_pct": 32.9, "leads_pct": 30.7, "indice": 1.07}, "outro": {"buyers_pct": 28.4, "leads_pct": 18.9, "indice": 1.5}, "autonomo": {"buyers_pct": 18.3, "leads_pct": 21.5, "indice": 0.85}, "mecanico": {"buyers_pct": 6.4, "leads_pct": 5.6, "indice": 1.14}, "empreendedor": {"buyers_pct": 5.5, "leads_pct": 4.5, "indice": 1.22}, "desempregado": {"buyers_pct": 5.5, "leads_pct": 16.5, "indice": 0.33}, "loja-pecas": {"buyers_pct": 2.1, "leads_pct": 0.7, "indice": 3.0}, "estudante": {"buyers_pct": 0.9, "leads_pct": 1.5, "indice": 0.6}}}, "kpis": {"leads": 18032, "compradores": 328, "respostas_compra": 367, "conversao": 1.82, "faturamento": 213191.92, "ticket_medio": 649.98, "ticket_mediana": 682.78}, "por_dia": [{"data": "10/08/2026", "compras": 199, "fat": 127051.36}, {"data": "11/08/2026", "compras": 83, "fat": 54646.73}, {"data": "12/08/2026", "compras": 25, "fat": 17155.45}, {"data": "13/08/2026", "compras": 8, "fat": 5462.24}, {"data": "14/08/2026", "compras": 4, "fat": 2731.12}, {"data": "15/08/2026", "compras": 3, "fat": 2048.34}, {"data": "16/08/2026", "compras": 2, "fat": 1365.56}, {"data": "17/08/2026", "compras": 3, "fat": 2048.34}, {"data": "18/08/2026", "compras": 1, "fat": 682.78}], "origem": {"whatsapp": 140, "youtube": 133, "clint": 43, "(sem origem)": 5, "qrcode": 5, "direto": 2}, "n_captacao": 18032};
+
+/* ================= LABELS ================= */
+var L = {
+  idade:{'menos-18':'Menos de 18','18-24':'18–24 anos','25-34':'25–34 anos','35-44':'35–44 anos','45-54':'45–54 anos','55+':'55 anos ou +'},
+  tempo:{'menos-3m':'Menos de 3 meses','3-6m':'3 a 6 meses','6m-1a':'6 meses a 1 ano','1-2a':'1 a 2 anos','mais-2a':'Mais de 2 anos'},
+  canal:{'instagram':'Instagram','youtube':'YouTube','facebook':'Facebook','tiktok':'TikTok','indicacao':'Indicação','kwai':'Kwai','google':'Google','outro':'Outro'},
+  conhecimento:{'nenhum':'Nenhum','pouco':'Um pouco','avancado':'Avançado / já atua'},
+  renda:{'ate-1k':'Até R$ 1.000','1k-3k':'R$ 1k–3k','3k-5k':'R$ 3k–5k','5k-10k':'R$ 5k–10k','acima-10k':'Acima de R$ 10k'},
+  ocupacao:{'clt':'CLT / Colaborador','autonomo':'Autônomo / MEI','empreendedor':'Empreendedor','mecanico':'Mecânico de motos','desempregado':'Desempregado','estudante':'Estudante','loja-pecas':'Loja de peças','outro':'Outros'},
+  interesse:{'baixa-concorrencia':'Baixa concorrência na cidade','demanda':'Alta demanda pelo serviço','lucratividade':'Alta lucratividade'}
+};
+var ORDER = {
+  idade:['menos-18','18-24','25-34','35-44','45-54','55+'],
+  tempo:['menos-3m','3-6m','6m-1a','1-2a','mais-2a'],
+  canal:['instagram','youtube','facebook','tiktok','indicacao','kwai','google','outro'],
+  conhecimento:['nenhum','pouco','avancado'],
+  renda:['ate-1k','1k-3k','3k-5k','5k-10k','acima-10k'],
+  ocupacao:['clt','autonomo','empreendedor','mecanico','desempregado','estudante','loja-pecas','outro'],
+  interesse:['baixa-concorrencia','demanda','lucratividade']
+};
+var GOLD='#D4A800', INK='#111', GRAY='#B4B2A9', GRAYD='#6B6A63', GRID='#E4E3DE';
+
+function brl(n){return 'R$ '+n.toLocaleString('pt-BR',{minimumFractionDigits:0,maximumFractionDigits:0});}
+function ptDate(s){var p=s.split('/');return p[0]+'/'+p[1];}
+
+/* ================= KPIs ================= */
+function fmtInt(n){return n.toLocaleString('pt-BR');}
+(function(){
+  var k=DATA.kpis;
+  document.getElementById('m-buy').textContent=fmtInt(k.compradores);
+  document.getElementById('m-lead').textContent=fmtInt(k.leads);
+  var cards=[
+    {label:'Compradores únicos',val:fmtInt(k.compradores),foot:'de <b>'+fmtInt(k.respostas_compra)+'</b> respostas com compra'},
+    {label:'Faturamento total',val:'<span class="pre">R$</span>'+Math.round(k.faturamento).toLocaleString('pt-BR'),foot:'na janela do lançamento',hi:true},
+    {label:'Ticket médio',val:'<span class="pre">R$</span>'+Math.round(k.ticket_medio),foot:'mediana <b>'+brl(k.ticket_mediana)+'</b>'},
+    {label:'Conversão da base',val:k.conversao.toString().replace('.',',')+'<em>%</em>',foot:'<b>'+fmtInt(k.compradores)+'</b> compras / <b>'+fmtInt(k.leads)+'</b> leads'}
+  ];
+  document.getElementById('kpis').innerHTML=cards.map(function(c){
+    return '<div class="kpi'+(c.hi?' hi':'')+'"><div class="kpi-label">'+c.label+'</div>'+
+    '<div class="kpi-val">'+c.val+'</div><div class="kpi-foot">'+c.foot+'</div></div>';
+  }).join('');
+})();
+
+/* ================= BAR LISTS ================= */
+function barList(elId, concept, src){
+  var d=DATA[src][concept]; var order=ORDER[concept];
+  var max=0; order.forEach(function(k){ if(d[k]&&d[k].pct>max)max=d[k].pct; });
+  var html=order.filter(function(k){return d[k];}).map(function(k){
+    var o=d[k]; var w=(o.pct/max*100);
+    return '<div class="bar-row"><div class="bl"><span class="k">'+(L[concept][k]||k)+
+      '</span><span class="v"><b>'+o.pct.toString().replace('.',',')+'%</b> · '+o.n+'</span></div>'+
+      '<div class="track"><div class="fill" style="width:0" data-w="'+w+'"></div></div></div>';
+  }).join('');
+  document.getElementById(elId).innerHTML=html;
+}
+barList('b-idade','idade','compradores');
+barList('b-renda','renda','compradores');
+barList('b-canal','canal','compradores');
+barList('b-tempo','tempo','compradores');
+barList('b-conh','conhecimento','compradores');
+barList('b-ocup','ocupacao','compradores');
+barList('b-inter','interesse','compradores');
+
+/* ================= CHARTS ================= */
+var chDia,chFat,chUtm;
+function buildCharts(){
+  if(typeof Chart==='undefined'){
+    ['c-dia','c-fat','c-utm'].forEach(function(id){
+      var el=document.getElementById(id); if(el){var w=el.closest('.chart-h');
+        if(w)w.innerHTML='<div style="height:100%;display:grid;place-items:center;color:#6B6A63;font-size:12.5px">Gráfico indisponível (sem conexão)</div>';}
+    });
+    return;
+  }
+  Chart.defaults.font.family="'DM Sans',sans-serif";
+  Chart.defaults.color=GRAYD;
+  var dias=DATA.por_dia.map(function(x){return ptDate(x.data);});
+  var compras=DATA.por_dia.map(function(x){return x.compras;});
+  var fats=DATA.por_dia.map(function(x){return x.fat;});
+
+  chDia=new Chart(document.getElementById('c-dia'),{type:'bar',
+    data:{labels:dias,datasets:[{data:compras,backgroundColor:GOLD,borderRadius:5,maxBarThickness:38}]},
+    options:barOpts(function(v){return v+' compras';})});
+
+  var acc=0; var cum=fats.map(function(v){acc+=v;return Math.round(acc);});
+  chFat=new Chart(document.getElementById('c-fat'),{type:'line',
+    data:{labels:dias,datasets:[
+      {label:'Acumulado',data:cum,borderColor:INK,backgroundColor:'rgba(17,17,17,.05)',fill:true,tension:.3,pointRadius:3,pointBackgroundColor:INK,borderWidth:2},
+      {label:'No dia',data:fats.map(function(v){return Math.round(v);}),borderColor:GOLD,backgroundColor:'transparent',tension:.3,pointRadius:3,pointBackgroundColor:GOLD,borderWidth:2,borderDash:[4,3]}
+    ]},
+    options:lineOpts()});
+
+  var utm=DATA.origem; var uk=Object.keys(utm).sort(function(a,b){return utm[b]-utm[a];});
+  var ucol=[GOLD,INK,'#8A7420','#C9C7BE','#E0D48A','#6B6A63'];
+  chUtm=new Chart(document.getElementById('c-utm'),{type:'doughnut',
+    data:{labels:uk.map(function(k){return k.charAt(0).toUpperCase()+k.slice(1);}),
+      datasets:[{data:uk.map(function(k){return utm[k];}),backgroundColor:ucol,borderColor:'#fff',borderWidth:2}]},
+    options:{cutout:'62%',plugins:{legend:{position:'right',labels:{boxWidth:11,padding:12,font:{size:12}}},
+      tooltip:{callbacks:{label:function(c){return ' '+c.label+': '+c.parsed+' compradores';}}}},
+      responsive:true,maintainAspectRatio:false}});
+}
+function barOpts(tip){return{responsive:true,maintainAspectRatio:false,
+  plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){return ' '+tip(c.parsed.y);}}}},
+  scales:{x:{grid:{display:false},ticks:{font:{size:12}}},
+    y:{beginAtZero:true,grid:{color:GRID},ticks:{precision:0,font:{size:11}}}}};}
+function lineOpts(){return{responsive:true,maintainAspectRatio:false,
+  plugins:{legend:{display:true,position:'top',align:'end',labels:{boxWidth:11,padding:10,font:{size:11.5}}},
+    tooltip:{callbacks:{label:function(c){return ' '+c.dataset.label+': R$ '+c.parsed.y.toLocaleString('pt-BR');}}}},
+  scales:{x:{grid:{display:false},ticks:{font:{size:12}}},
+    y:{beginAtZero:true,grid:{color:GRID},ticks:{font:{size:11},callback:function(v){return 'R$ '+(v/1000)+'k';}}}}};}
+
+/* ================= COMPARISON (VIEW 2) ================= */
+function cmpBlock(concept,title){
+  var db=DATA.compradores[concept], dl=DATA.captacao[concept]||{};
+  var order=ORDER[concept];
+  var rows=order.filter(function(k){return db[k]||dl[k];}).map(function(k){
+    var b=db[k]?db[k].pct:0, l=dl[k]?dl[k].pct:0;
+    return '<div class="cmp-line"><span class="lbl">'+(L[concept][k]||k)+'</span>'+
+      '<div><div class="tk" style="margin-bottom:3px"><div class="fl buy" style="width:0" data-w="'+b+'"></div></div>'+
+      '<div class="tk"><div class="fl lead" style="width:0" data-w="'+l+'"></div></div></div>'+
+      '<span class="pc">'+b.toString().replace('.',',')+'%</span></div>';
+  }).join('');
+  return '<div class="panel"><h3>'+title+'</h3><div class="cap" style="margin-bottom:16px">Barra superior = compradores · inferior = leads</div>'+rows+'</div>';
+}
+document.getElementById('cmp-wrap').innerHTML=
+  cmpBlock('idade','Faixa etária')+
+  cmpBlock('renda','Renda mensal')+
+  cmpBlock('canal','Canal de origem')+
+  cmpBlock('tempo','Tempo de acompanhamento');
+
+/* ================= CONVERSION INDEX ================= */
+function idxBlock(concept,title){
+  var d=DATA.indice_conversao[concept]; var order=ORDER[concept];
+  var CAP=2.6;
+  var items=order.filter(function(k){return d[k]&&d[k].indice!=null;})
+    .sort(function(a,b){return d[b].indice-d[a].indice;})
+    .map(function(k){
+      var o=d[k]; var idx=o.indice; var cls=idx>=1.15?'up':(idx<=0.85?'down':'mid');
+      var w=Math.min(idx/CAP*100,100);
+      return '<div class="idx-item"><div class="top"><span class="k">'+(L[concept][k]||k)+
+        '</span><span class="val" style="color:'+(cls==='up'?'#3FA34D':cls==='down'?'#D0453B':'#D4A800')+'">'+
+        idx.toString().replace('.',',')+'×</span></div>'+
+        '<div class="idx-scale"><div class="mid"></div><div class="fl '+cls+'" style="width:0" data-w="'+w+'"></div></div>'+
+        '<div class="idx-sub">'+o.buyers_pct.toString().replace('.',',')+'% dos compradores · '+o.leads_pct.toString().replace('.',',')+'% dos leads</div></div>';
+    }).join('');
+  return '<div class="panel"><h3>'+title+'</h3><div class="cap" style="margin-bottom:16px">Ordenado do que mais converte ao que menos converte</div>'+items+'</div>';
+}
+document.getElementById('idx-wrap').innerHTML=
+  idxBlock('renda','Por renda')+
+  idxBlock('canal','Por canal de origem')+
+  idxBlock('idade','Por faixa etária')+
+  idxBlock('ocupacao','Por ocupação');
+
+/* ================= INSIGHTS ================= */
+(function(){
+  var ins=[
+    {cls:'win',tag:'Canal que converte',h:'YouTube e TikTok puxam acima do peso',
+     p:'O <b>Instagram</b> traz 61% dos leads, mas só 50% das compras (índice 0,82). Já <b>YouTube (2,19×)</b> e <b>TikTok (2,55×)</b> convertem muito acima da média. Vale realocar verba e reforçar criativos nesses canais no próximo lançamento.'},
+    {cls:'win',tag:'Perfil de renda',h:'Renda maior compra mais',
+     p:'Quanto maior a renda declarada, maior a conversão: <b>acima de R$ 10k (1,94×)</b> e <b>R$ 5k–10k (1,67×)</b> lideram. A faixa <b>até R$ 1.000</b> quase não converte (0,38×) apesar de ser 27% da base — público de baixo poder de compra infla o CPL sem virar venda.'},
+    {cls:'watch',tag:'Ponto de atenção',h:'Metade dos leads é muito recente',
+     p:'<b>52%</b> dos compradores acompanham a Mundial Cromo há <b>menos de 3 meses</b> — a base captada é ainda mais recente (66%). A audiência é nova e pouco aquecida; nutrição e prova social tendem a elevar a conversão de quem ainda não confia.'},
+    {cls:'',tag:'Timing do lançamento',h:'Vende-se na abertura',
+     p:'Os <b>dois primeiros dias</b> concentram a maior parte das compras e do faturamento. A cauda após o 3º dia é curta — concentrar esforço, urgência e mídia no início do carrinho aberto é o movimento de maior retorno.'}
+  ];
+  document.getElementById('ins-wrap').innerHTML=ins.map(function(i){
+    return '<div class="ins-card '+i.cls+'"><div class="tag">'+i.tag+'</div><h4>'+i.h+'</h4><p>'+i.p+'</p></div>';
+  }).join('');
+})();
+
+/* ================= ANIMATE FILLS ================= */
+function animateFills(scope){
+  var els=(scope||document).querySelectorAll('.fill[data-w],.fl[data-w]');
+  requestAnimationFrame(function(){requestAnimationFrame(function(){
+    els.forEach(function(e){e.style.width=e.getAttribute('data-w')+'%';});
+  });});
+}
+
+/* ================= TABS ================= */
+var built2=false;
+document.querySelectorAll('.tab').forEach(function(t){
+  t.addEventListener('click',function(){
+    document.querySelectorAll('.tab').forEach(function(x){x.classList.remove('on');});
+    document.querySelectorAll('.view').forEach(function(x){x.classList.remove('on');});
+    t.classList.add('on');
+    var v=document.getElementById(t.dataset.v); v.classList.add('on');
+    animateFills(v);
+    window.scrollTo({top:0,behavior:'smooth'});
+  });
+});
+
+/* ================= INIT ================= */
+try{ buildCharts(); }catch(e){ console.warn('charts:',e); }
+animateFills(document.getElementById('v1'));
+
+</script>
+</body>
+</html>
